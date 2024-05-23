@@ -1,14 +1,13 @@
 async function idk(path) {
     fetch(path).then(
         val => {
-            val.text().then(s => {document.getElementById("test").innerHTML = s});
+            val.text().then(s => {document.getElementById("test").innerHTML = s;});
         },
     ).catch(
         err => {
-            console.log("Error: ", err);
+            console.log("Error(1st fetch): ", err);
         }
     )
 }
 
-let path = "http://localhost:3000/";
-idk(path);
+// idk("http://localhost:3000/fetch");
