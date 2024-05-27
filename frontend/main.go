@@ -27,38 +27,25 @@ func setContentType(filePath string, writer http.ResponseWriter) {
 	}
 }
 
-func notFoundSite(w http.ResponseWriter, r *http.Request) {
-	file := "err404.html"
-	content, err := os.ReadFile(file)
-	if err != nil {
-		if os.IsNotExist(err) {
-			notFoundSite(w, r)
-		} else {
-			fmt.Println("Error reading from file: ", err.Error())
-		}
-	}
-	setContentType(file, w)
-
-	_, err = w.Write(content)
-	if err != nil {
-		fmt.Println("Error writing to http: ", err.Error())
-		os.Exit(1)
-	}
-}
-
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		content, err := os.ReadFile(r.RequestURI[1:])
+		file := ""
+		if strings.Contains(r.Header.Get("Accept"), "text/html") {
+			file = "index.html"
+		} else {
+			file = r.RequestURI[1:]
+		}
+
+		content, err := os.ReadFile(file)
 		if err != nil {
 			if os.IsNotExist(err) {
-				fmt.Println("not found error occurred")
-				notFoundSite(w, r)
-			} else {
-				fmt.Println("Error reading from file: ", err.Error())
+				// Error 404 implementation here
+				fmt.Println("not found error")
 			}
+			fmt.Println("Error reading from file: ", err.Error())
 		}
-		setContentType(r.RequestURI[1:], w)
 
+		setContentType(file, w)
 		_, err = w.Write(content)
 		if err != nil {
 			fmt.Println("Error writing to http: ", err.Error())

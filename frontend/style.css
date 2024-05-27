@@ -1,13 +1,28 @@
-* {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+.img-prof-pic {
+    width: 3.5rem;
+    height: 3.5rem;
 }
 
-body {
-    background-color: #4F6F52;
+.max-vh-100 {
+    max-height: 100vh;
 }
 
-main {
-    background-color: #E8DFCA;
+.w-95 {
+    width: 95%;
+}
+
+.gutter-stable {
+    scrollbar-gutter: stable;
+}
+
+.chosen {
+    background-color: #DCDEE4;
+}
+
+.chosen:hover {
+    background-color: #DCDEE4;
+}
+
+.select-none {
+    user-select: none;
 }
