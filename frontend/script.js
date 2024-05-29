@@ -12,3 +12,6 @@ async function idk(path) {
 
 let request = window.location.href.substring(window.location.href.lastIndexOf("/"));
 // idk("http://localhost:3000" + request);
+
+//Scroll start at bottom
+document.getElementById("test").scrollTop = document.getElementById("test").scrollHeight;
