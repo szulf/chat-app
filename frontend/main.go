@@ -30,10 +30,24 @@ func setContentType(filePath string, writer http.ResponseWriter) {
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		file := ""
+
+		// My router
 		if strings.Contains(r.Header.Get("Accept"), "text/html") {
-			file = "index.html"
+			switch r.URL.Path {
+			case "/":
+				file = "login.html"
+
+			case "/login":
+				file = "login.html"
+
+			case "/register":
+				file = "register.html"
+
+			case "/chats":
+				file = "chats.html"
+			}
 		} else {
-			file = r.RequestURI[1:]
+			file = r.URL.Path[1:]
 		}
 
 		content, err := os.ReadFile(file)
