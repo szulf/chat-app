@@ -12,12 +12,12 @@
     <div class="rounded p-2 bg-secondary mb-5 d-flex flex-column align-items-center">
         <form class="d-flex flex-column gap-3 align-items-center">
             <div class="fs-3 text-light select-none">Login</div>
-            <input type="text" name="username" placeholder="Username" class="form-control">
-            <input type="password" name="password" placeholder="Password" class="form-control">
+            <input type="text" name="username" placeholder="Username" class="form-control" id="usernameInput">
+            <input type="password" name="password" placeholder="Password" class="form-control" id="passwordInput">
             <span class="alert alert-danger d-none">Error</span>
-            <button class="btn btn-light">Login</button>
+            <button class="btn btn-light" id="loginSubmit" type="button">Login</button>
         </form>
-        <a href="http://localhost:8080/register" class="link-info">Register instead!</a>
+        <a href="http://localhost:8080/register" class="link-info">Register Page</a>
     </div>
 </body>
 </html>
