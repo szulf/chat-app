@@ -1,94 +1,92 @@
-async function logFetchData(host, path) {
-    fetch(host+path)
+async function fetchData(host, path, args, fn) {
+    fetch(host+path, args)
         .then(val => {
-            val.text().then((s) => (console.log(s)));
+            val.text().then(fn);
         })
         .catch(err => {
-            console.log("Error(1st fetch): ", err);
+            console.log("Error(fetch): ", err);
         });
 }
 
+const host = "http://localhost:3000";
 const request = window.location.href.substring(window.location.href.lastIndexOf("/"));
 
-// Dont know if thats good
+// gonna need to change that to check if user is logged in
+// with a server request maybe??
+// because cookie checking is on the server
+// to like a "/loggedIn" endpoint
 if (request === "/") {
-    window.location.href = "/login";
+    window.location.replace("/login");
 }
-logFetchData("http://localhost:3000", request);
 
-const loginSubmit = document.getElementById("loginSubmit");
-if (loginSubmit !== null) {
-    loginSubmit.addEventListener("click", e => {
-        const username = document.getElementsByName("username")[0].value;
-        const password = document.getElementsByName("password")[0].value;
+fetchData(host, request, {}, (s) => {
+    let ss = s.split("\n");
+    let elem = document.getElementById(ss[0]);
+    ss.shift();
+    if (elem !== null) {
+        if (elem.id === "errMsg") {
+            elem.classList.remove("d-none");
+        }
+        elem.innerHTML = ss.join("");
+    }
 
-        fetch("http://localhost:3000/login", {
-            method: "POST",
-            body: JSON.stringify({
-                "username": username,
-                "password": password
-            }),
-            credentials: "include"
-        }).then(val => {
-            val.text().then(s => {
-                console.log(s);
-            });
-        }).catch(err => {
-            console.log("Error(login): ", err);
+    if (request === "/login" || request === "/register") {
+        const form = document.getElementById("Form");
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            const username = document.getElementsByName("Username")[0].value;
+            const password = document.getElementsByName("Password")[0].value;
+            let passwordConfirm;
+            if (request === "/register") {
+                passwordConfirm = document.getElementsByName("PasswordConfirm")[0].value;
+            }
+            const errMsg = document.getElementById("errMsg");
+
+            if (!errMsg.classList.contains("d-none")) {
+                errMsg.classList.add("d-none");
+            }
+
+            let args;
+            if (request === "/register") {
+                args = {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "username": username,
+                        "password": password,
+                        "passwordConfirm": passwordConfirm,
+                    }),
+                    credentials: "include"
+                }
+            } else if (request === "/login") {
+                args = {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "username": username,
+                        "password": password,
+                    }),
+                    credentials: "include"
+                }
+            }
+
+            fetchData(host, request, args, (s) => {
+                let ss = s.split("\n");
+                let elem = document.getElementById(ss[0]);
+                ss.shift();
+                if (elem !== null) {
+                    if (elem.id === "errMsg") {
+                        elem.classList.remove("d-none");
+                    }
+                    elem.innerHTML = ss.join("");
+                }
+            })
+            window.history.replaceState(null, "", "/chats");
         });
-
-        // Gotta check if this will save cookies
-        // window.location.href = "/chats";
-    });
-}
-
-const registerSubmit = document.getElementById("registerSubmit");
-if (registerSubmit !== null) {
-    registerSubmit.addEventListener("click", e => {
-        const username = document.getElementsByName("username")[0].value;
-        const password = document.getElementsByName("password")[0].value;
-        const passwordConfirm = document.getElementsByName("passwordConfirm")[0].value;
-
-        // Move to a different function later
-        // username(4 chars, no spaces)
-        let usernameRgx = /^(?!.*[ ])[a-zA-z\d@$!%*#?&]{4,}/;
-        if (username.match(usernameRgx) === null) {
-            console.log("username must be at least 4 characters long, and cant contain spaces");
-            return;
-        }
-        // password(1 number, 1 lowercase, 1 uppercase, 1 special?, 8 chars)
-        let pswrdRgx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]{8,}/;
-        if (password.match(pswrdRgx) === null) {
-            console.log("password must contain 1 uppercase letter, 1 lowercase letter, 1 digit and 1 special character(@$!%*#?&), and must be at least 8 characters long");
-            return;
-        }
-        // Are passwords the same
-        if (password !== passwordConfirm) {
-            console.log("passwords not the same");
-            return;
-        }
-
-        fetch("http://localhost:3000/login", {
-            method: "POST",
-            body: JSON.stringify({
-                "username": username,
-                "password": password
-            }),
-            credentials: "include"
-        }).then(val => {
-            val.text().then(s => {
-                console.log(s);
-            });
-        }).catch(err => {
-            console.log("Error(login): ", err);
-        });
-
-        // Gotta check if this will save cookies
-        // window.location.href = "/chats";
-    });
-}
+    }
+})
 
 // Move to a different script later
+// like a front end script
+// which will also contain the thing with classes
 
 // Scroll start at bottom
 const test = document.getElementById("test");

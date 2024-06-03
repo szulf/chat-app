@@ -33,29 +33,13 @@ func main() {
 
 		// My router
 		if strings.Contains(r.Header.Get("Accept"), "text/html") {
-			switch r.URL.Path {
-			case "/":
-				file = "login.html"
-
-			case "/login":
-				file = "login.html"
-
-			case "/register":
-				file = "register.html"
-
-			case "/chats":
-				file = "chats.html"
-			}
+			file = "index.html"
 		} else {
 			file = r.URL.Path[1:]
 		}
 
 		content, err := os.ReadFile(file)
 		if err != nil {
-			if os.IsNotExist(err) {
-				// Error 404 implementation here
-				fmt.Println("not found error")
-			}
 			fmt.Println("Error reading from file: ", err.Error())
 		}
 
